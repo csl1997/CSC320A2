@@ -185,6 +185,14 @@ RootWidget:
 ########################################################
 ## YOU CAN PLACE ADDITIONAL SPECS BETWEEN THESE LINES ##
 ########################################################
+    Button:
+        id: runButton
+        size_hint: 0.119, 0.119
+        pos_hint: {'x':0, 'y':0}
+        markup: True
+        text: '[size=30][b]Run[/b]'
+
+        on_press: run_algorithm()
 
 
 ########################################################

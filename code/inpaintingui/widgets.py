@@ -140,6 +140,15 @@ class RootWidget(FloatLayout):
 #########################################
 ## PLACE YOUR CODE BETWEEN THESE LINES ##
 #########################################
+    def run_algorithm(self):
+        maxI = self.inpaintingControl.maxIterations()
+        ok, msg = self.inpaintingControl.runAlgorithm(self.ids.imviewer, maxIterations=maxI)
+        if not ok:
+            self.show_error_popup(self.currentModeMsg(), msg)
+        
+        self.display_current_image()
+            
+        return
 
 #########################################
         
