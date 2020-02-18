@@ -274,7 +274,23 @@ class ImageViewer(Scatter):
 #########################################
 ## PLACE YOUR CODE BETWEEN THESE LINES ##
 #########################################
+    def on_touch_up_callback(self, touch):
+        # Check mouse event
+        if 'button' not in touch.profile:
+            return
+        
+        # Check left click
+        if (touch.button != 'left'):
+            return
 
+        self.ud = touch.ud
+        # Remove labels
+        if self.ud.has_key('group'):
+            self.canvas.remove_group(self.ud['group'])
+        if self.ud.has_key('label'):
+            self.remove_widget(self.ud['label'])
+
+        
 #########################################
 
 
