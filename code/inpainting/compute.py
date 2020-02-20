@@ -118,6 +118,28 @@ def computeGradient(psiHatP=None, inpaintedImage=None, filledImage=None):
     Dy = 1
     Dx = 0    
     #########################################
+
+    filled = psiHatP.filled
+    pixels, p_valid = psiHatP.pixels(True)
+
+    # grayscale of the patch
+    grayscale = cv.cvtColor(pixels, cv.COLOR_BGR2GRAY)
+    # derivative of x and y
+    dx = cv.Sobel(grayscale, cv.CV_64F, 1, 0, ksize=5)
+    dy = cv.Sobel(grayscale, cv.CV_64F, 0, 1, ksize=5)
+
+    gradient = np.sqrt(np.multiply(dx, dx) + np.multiply(dy, dy))
+
+    # remove invalid pixels
+    gradient = np.multiply(gradient, p_valid)
+
+    # remove filled pixels
+    gradient = np.multiply(gradient, (filled == 255))
+
+    i, j = np.unravel_index(gradient.argmax(), gradient.shape)
+
+    Dx = dx[i][j]
+    Dy = dy[i][j]
     
     return Dy, Dx
 

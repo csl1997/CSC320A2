@@ -89,15 +89,29 @@ class Inpainting:
     # leave the matting instance's dictionary entry unaffected and return
     # False, along with an error message
     def readImage(self, fileName, key):
-        success = False
+        success = True
         msg = 'No Image Available'
 
         #########################################
         ## PLACE YOUR CODE BETWEEN THESE LINES ##
         #########################################
-
         # COPY INTO THIS SPACE YOUR IMPLEMENTATION OF THIS FUNCTION
         # FROM YOUR algorithm.py of A1
+
+        if key not in self._images.keys():
+            msg = 'Key error'
+            success = False
+            return success, msg
+        
+        try:
+            if key == 'source': 
+                image = cv.imread(fileName, cv.IMREAD_COLOR)
+            if key == 'alpha': 
+                image = cv.imread(fileName, 0)
+            self._images[key] = image
+        except:
+            success = False
+            msg = "Image read failed"
 
         #########################################
         return success, msg
@@ -109,13 +123,17 @@ class Inpainting:
     # The routine should return True if it succeeded. If it did not, it should
     # return False, along with an error message
     def writeImage(self, fileName, key):
-        success = False
+        success = True
         msg = 'No Image Available'
 
         #########################################
         ## PLACE YOUR CODE BETWEEN THESE LINES ##
         #########################################
-
+        try:
+            cv.imwrite(fileName, self._images[key])
+        except:
+            success = False
+            msg = "Image write failed"
         #########################################
         return success, msg
 
@@ -153,8 +171,29 @@ success, errorMessage = exampleBasedInpainting(self)
         ## Specifically: source and alpha must have the same dimesions,
         ## source much be a 3-channel uint8 image and alpha must be a 
         ## one-channel uint8 image.
+
+        # Check if there is a source and alpha
+        if self._images['source'] is None or self._images['alpha'] is None:
+            msg = 'Do not have source and alpha'
+            return success, msg
         
-        success = True
+        source_shape = list(self._images['source'].shape)
+        alpha_shape = list(self._images['alpha'].shape)
+
+        # Check the size of alpha ans source
+        if source_shape[:2] != alpha_shape[:2]:
+            msg = 'Size of the images is different'
+            return success, msg
+
+        # Check if source image valid
+        if source_shape[2] != 3 or self._images['source'].dtype != 'uint8':
+            msg =  'Source is not 3-channel uint8 image'
+            return False, msg
+
+        # Check if alpha image valid
+        if len(alpha_shape) != 2 or self._images['alpha'].dtype != 'uint8':
+            msg = 'Alpha is not 1-channel unit8 image'
+            return success, msg
 
         #########################################
 
